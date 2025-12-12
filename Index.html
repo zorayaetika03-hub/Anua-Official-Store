@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ANUA Skincare — Official</title>
+
+  <style>
+  /* ================= RESET ================= */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f7f9f9;
+    --green: #86c59d;
+    --accent: #2a5a3a;
+    --muted: #6b6b6b;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: #222;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  /* ================= NAVBAR ================= */
+  .navbar {
+    width: 100%;
+    background: #fff;
+    padding: 15px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 1200;
+  }
+  .nav-left { display:flex; align-items:center; gap:12px; }
+  .nav-left img { width:40px; height:40px; border-radius:8px; object-fit:cover; }
+  .nav-logo { font-weight:700; color:var(--accent); font-size:18px; }
+  .nav-links { display:flex; gap:18px; list-style:none; }
+  .nav-links a { text-decoration:none; color:var(--accent); font-weight:600; transition:0.18s; }
+  .nav-links a:hover { color:var(--green); }
+  .theme-toggle { border:none; background:transparent; cursor:pointer; font-size:18px; }
+
+  /* ================= MARQUEE ================= */
+  .marquee-wrapper {
+    width:100vw; margin-left: calc(50% - 50vw);
+    overflow:hidden; background:var(--accent); color:#fff;
+    padding:7px 0; font-weight:600; font-size:14px; white-space:nowrap;
+  }
+  .marquee-inner { display:inline-block; padding-left:100%; animation:marqueeScroll 18s linear infinite; }
+  @keyframes marqueeScroll { 0%{transform:translateX(0)} 100%{transform:translateX(-100%)} }
+
+  /* ================= HERO / SLIDER ================= */
+  .hero {
+    position:relative; width:100vw; margin-left:calc(50% - 50vw);
+    height:70vh; min-height:300px; overflow:hidden;
+  }
+  .slider { width:100%; height:100%; overflow:hidden; position:relative; }
+  .slides-wrapper { display:flex; height:100%; transition:transform .7s ease-in-out; }
+  .slide { position:relative; min-width:100%; height:100%; overflow:hidden; }
+  .slide-image { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .slide::before {
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(to right, rgba(0,0,0,0.55), rgba(0,0,0,0.15));
+  }
+  .slide-content {
+    position:absolute; left:28px; bottom:28px; max-width:640px; color:#fff; z-index:2;
+  }
+  .slide-content h1 { font-size:42px; font-weight:700; margin-bottom:12px; }
+
+  /* slider arrows & dots */
+  .slider-btn {
+    position:absolute; top:50%; transform:translateY(-50%); z-index:20;
+    background:rgba(0,0,0,0.45); border:none; color:#fff; width:44px; height:44px; border-radius:50%;
+    cursor:pointer; display:grid; place-items:center; font-size:18px;
+  }
+  #prev { left:12px; } #next { right:12px; }
+  .slider-btn:hover { background:rgba(0,0,0,0.65); }
+  .slider-dots { position:absolute; bottom:18px; left:50%; transform:translateX(-50%); display:flex; gap:8px; z-index:20; }
+  .dot { width:10px; height:10px; background:#ddd; border-radius:50%; cursor:pointer; transition:.2s; }
+  .dot.active { background:var(--green); }
+
+  /* ================= BUTTON ================= */
+  .btn {
+    display:inline-block; padding:10px 20px; border-radius:999px; font-size:14px;
+    border:1px solid var(--accent); background:var(--accent); color:#fff; cursor:pointer;
+  }
+  .btn.primary { background:var(--green); border-color:var(--green); }
+  .btn.outline { background:transparent; color:var(--accent); }
+
+  /* ================= LAYOUT / PRODUCTS ================= */
+  .container { width:92%; max-width:1100px; margin:28px auto; }
+  .section-title { margin-bottom:16px; color:var(--accent); font-size:20px; }
+  .product-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:24px; }
+  .product-card {
+    background:#fff; border-radius:14px; padding:18px; display:flex; flex-direction:column;
+    box-shadow:0 8px 20px rgba(0,0,0,0.05);
+  }
+  .product-card img { width:100%; height:220px; object-fit:contain; margin-bottom:12px; border-radius:8px; }
+  .price { color:var(--accent); font-weight:700; margin-bottom:6px; }
+  .muted { color:var(--muted); margin-bottom:10px; }
+
+  /* quick-order button style inside card */
+  .product-card .btn { margin-top:auto; }
+
+  /* ================= TABEL STOK ================= */
+  .stock-section {
+    margin-top:40px; background:#fff; padding:20px; border-radius:12px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.05);
+  }
+  .stock-table { width:100%; border-collapse:collapse; font-size:14px; border-radius:10px; overflow:hidden; }
+  .stock-table thead { background:var(--green); color:#fff; }
+  .stock-table th, .stock-table td { padding:12px 14px; border-bottom:1px solid #e6e6e6; text-align:left; }
+  .stock-table tr:last-child td { border-bottom:none; }
+  .stock-table tbody tr:hover { background:rgba(134,197,157,0.08); }
+
+  .stock-badge { padding:6px 12px; border-radius:20px; font-size:12px; font-weight:700; display:inline-block; }
+  .stock-badge.ready { background: rgba(134,197,157,0.22); color:var(--accent); }
+  .stock-badge.limited { background:#fff3c8; color:#b28300; }
+  .stock-badge.empty { background:#ffd6d6; color:#c62828; }
+
+  /* ================= ORDER FORM ================= */
+  .order-section { background:#fff; padding:34px 20px; margin-top:36px; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,0.04); }
+  .order-form { max-width:520px; margin:0 auto; display:flex; flex-direction:column; gap:12px; }
+  .order-form input[type="text"], .order-form input[type="tel"], .order-form input[type="number"], .order-form select, .order-form textarea {
+    padding:12px; border-radius:8px; border:1px solid #dcdcdc; font-size:14px;
+  }
+
+  /* ================= FAQ ================= */
+  .faq details { background:#fff; padding:12px 14px; border-radius:8px; margin-bottom:10px; box-shadow:0 4px 12px rgba(0,0,0,0.04); }
+  .faq summary { cursor:pointer; font-weight:600; color:var(--accent); }
+
+  /* ================= FOOTER ================= */
+  .footer { background:var(--accent); color:#fff; padding:20px 0; margin-top:30px; text-align:center; }
+
+  /* ================= POPUP (overlay used by JS) ================= */
+  .popup-overlay, .popup-success {
+    position:fixed; inset:0; background:rgba(12,24,20,0.45); display:none; align-items:center; justify-content:center; z-index:3000;
+    backdrop-filter: blur(4px);
+  }
+  .popup-overlay.show, .popup-success.show { display:flex; }
+  .popup-card {
+    background:#fff; width:92%; max-width:420px; padding:24px; border-radius:16px; text-align:center; box-shadow:0 20px 40px rgba(0,0,0,0.18);
+  }
+  .popup-card h3 { color:var(--accent); margin-bottom:8px; }
+  .popup-card p { color:var(--muted); margin-bottom:16px; white-space:pre-line; }
+  .popup-actions { display:flex; justify-content:center; gap:12px; }
+  .btn-popup { padding:10px 16px; border-radius:999px; border:none; cursor:pointer; min-width:90px; }
+  .btn-popup.ghost { background:#f4f5f4; color:var(--accent); }
+  .btn-popup.primary { background:var(--green); color:#fff; }
+
+  /* ================= DARK MODE ================= */
+  body.dark { background:#111; color:#eee; }
+  body.dark .navbar { background:#181818; box-shadow:0 4px 10px rgba(0,0,0,0.6); }
+  body.dark .product-card, body.dark .order-section, body.dark .faq details, body.dark .stock-section { background:#1b1b1b; }
+  body.dark .stock-table thead { background:#2a5a3a; }
+  body.dark .stock-table td { border-color:#333; }
+
+  /* ================= RESPONSIVE ================= */
+  @media (max-width: 900px) {
+    .product-grid { grid-template-columns: repeat(2,1fr); }
+  }
+  @media (max-width: 600px) {
+    .nav-links { display:none; }
+    .hero { height:60vh; min-height:260px; }
+    .slide-content { left:18px; right:18px; bottom:24px; }
+    .slide-content h1 { font-size:26px; }
+    .product-grid { grid-template-columns: repeat(1,1fr); }
+  }
+  </style>
+</head>
+
+<body>
+  <!-- POPUP KONFIRMASI -->
+  <div class="popup-overlay" id="popupOverlay" aria-hidden="true">
+    <div class="popup-card">
+      <h3 id="popupTitle">Konfirmasi</h3>
+      <p id="popupMessage">Isi pesan...</p>
+      <div class="popup-actions">
+        <button class="btn-popup ghost" id="popupCancel">Batal</button>
+        <button class="btn-popup primary" id="popupOk">Lanjut</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP SUKSES -->
+  <div class="popup-success" id="popupSuccess" aria-hidden="true">
+    <div class="popup-card">
+      <h3>Pesanan Terkirim</h3>
+      <p>WhatsApp sudah terbuka. Admin akan menghubungi secepatnya 🤍</p>
+      <div style="margin-top:14px">
+        <button class="btn primary" id="popupSuccessOk">Oke</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-left">
+      <img src="https://raw.githubusercontent.com/zorayaetika03-hub/anua-assets/436066ad3ce4cbc83a1835e17ff84f8b973005be/Ana-Shooting-Toner.jpeg" alt="ANUA logo (placeholder)">
+      <div class="nav-logo">ANUA Skincare</div>
+    </div>
+
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#produk">Produk</a></li>
+      <li><a href="#stok">Stok</a></li>
+      <li><a href="#pesan">Order</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+
+    <button class="theme-toggle" aria-label="Toggle dark mode">🌓</button>
+  </nav>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrapper">
+    <div class="marquee-inner">Welcome to Official Website ANUA Indonesia — Produk 100% Original — Diskon Hingga 65% —</div>
+  </div>
+
+  <!-- HERO / SLIDER -->
+  <header class="hero" id="home">
+    <div class="slider">
+      <div class="slides-wrapper">
+        <div class="slide">
+          <img class="slide-image" src="https://raw.githubusercontent.com/zorayaetika03-hub/anua-assets/436066ad3ce4cbc83a1835e17ff84f8b973005be/Ana-Shooting-Toner.jpeg" alt="Heartleaf Toner">
+          <div class="slide-content">
+            <h1>Heartleaf Soothing Line</h1>
+            <p style="max-width:520px;">Perawatan alami untuk kulit sensitif & iritasi.</p>
+            <div style="margin-top:12px;"><a class="btn primary" href="#produk">Lihat Produk</a></div>
+          </div>
+        </div>
+
+        <div class="slide">
+          <img class="slide-image" src="https://raw.githubusercontent.com/zorayaetika03-hub/anua-assets/436066ad3ce4cbc83a1835e17ff84f8b973005be/Anua-Heartleaf-Pore-Control-Cleansing-Oil.jpeg" alt="Cleansing Oil">
+          <div class="slide-content">
+            <h1>100% Original Produk Korea</h1>
+            <p style="max-width:520px;">Belanja aman & terpercaya.</p>
+            <div style="margin-top:12px;"><a class="btn primary" href="#produk">Cek Sekarang</a></div>
+          </div>
+        </div>
+
+        <div class="slide">
+          <img class="slide-image" src="https://raw.githubusercontent.com/zorayaetika03-hub/anua-assets/436066ad3ce4cbc83a1835e17ff84f8b973005be/Anua-Heartleaf-Intense-Calming-Cream.jpeg" alt="Intense Calming Cream">
+          <div class="slide-content">
+            <h1>Kulit Lebih Sehat & Cerah</h1>
+            <p style="max-width:520px;">Mulai rutinitas skincare kamu hari ini.</p>
+            <div style="margin-top:12px;"><a class="btn primary" href="#produk">Belanja</a></div>
+          </div>
+        </div>
+      </div>
+
+      <button id="prev" class="slider-btn" aria-label="Previous">‹</button>
+      <button id="next" class="slider-btn" aria-label="Next">›</button>
+
+      <div class="slider-dots" id="sliderDots" aria-hidden="false"></div>
+    </div>
+  </header>
+
+  <!-- PRODUK -->
+  <main class="container" id="produk">
+    <h2 class="section-title">Produk Best Seller</h2>
+
+    <div class="product-grid" id="productGrid">
+      <article class="product-card">
+        <img src="https://raw.githubusercontent.com/zorayaetika03-hub/anua-assets/436066ad3ce4cbc83a1835e17ff84f8b973005be/Ana-Shooting-Toner.jpeg" alt="Heartleaf Toner">
+        <h3>Heartleaf 77% Soothing Toner</h3>
+        <p class="price">Rp 199.000</p>
+        <p class="muted">Toner menenangkan, meredakan kemerahan.</p>
+        <div class="card-actions">
+          <button class="btn outline">Lihat Detail</button>
+          <button class="btn primary quick-order" data-name="Heartleaf 77% Soothing Toner">Pesan</button>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <img src="https://raw.githubusercontent.com/zorayaetika03-hub/anua-assets/436066ad3ce4cbc83a1835e17ff84f8b973005be/Anua-Heartleaf-Pore-Control-Cleansing-Oil.jpeg" alt="Cleansing Oil">
+        <h3>Heartleaf Pore Control Cleansing Oil</h3>
+        <p class="price">Rp 229.000</p>
+        <p class="muted">Membersihkan makeup tanpa membuat kulit kering.</p>
+        <div class="card-actions">
+          <button class="btn outline">Lihat Detail</button>
+          <button class="btn primary quick-order" data-name="Heartleaf Pore Control Cleansing Oil">Pesan</button>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <img src="https://raw.githubusercontent.com/zorayaetika03-hub/anua-assets/436066ad3ce4cbc83a1835e17ff84f8b973005be/Anua-Heartleaf-Intense-Calming-Cream.jpeg" alt="Intense Calming Cream">
+        <h3>Intense Calming Cream</h3>
+        <p class="price">Rp 245.000</p>
+        <p class="muted">Menguatkan skin barrier dan hidrasi intens.</p>
+        <div class="card-actions">
+          <button class="btn outline">Lihat Detail</button>
+          <button class="btn primary quick-order" data-name="Intense Calming Cream">Pesan</button>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <img src="https://raw.githubusercontent.com/zorayaetika03-hub/anua-assets/436066ad3ce4cbc83a1835e17ff84f8b973005be/Ana-Shooting-Toner.jpeg" alt="Sunscreen (placeholder)">
+        <h3>Silky Moisture Sunscreen</h3>
+        <p class="price">Rp 179.000</p>
+        <p class="muted">SPF50+ tanpa whitecast, melembapkan.</p>
+        <div class="card-actions">
+          <button class="btn outline">Lihat Detail</button>
+          <button class="btn primary quick-order" data-name="Silky Moisture Sunscreen">Pesan</button>
+        </div>
+      </article>
+    </div>
+
+    <!-- TABEL STOK -->
+    <section class="stock-section" id="stok" aria-labelledby="stok-title">
+      <h2 class="section-title" id="stok-title">Stok Produk</h2>
+
+      <table class="stock-table" aria-describedby="stok-title">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Nama Produk</th>
+            <th>Stok</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Heartleaf 77% Soothing Toner</td>
+            <td>34</td>
+            <td><span class="stock-badge ready">Ready</span></td>
+          </tr>
+
+          <tr>
+            <td>2</td>
+            <td>Heartleaf Pore Control Cleansing Oil</td>
+            <td>0</td>
+            <td><span class="stock-badge empty">Habis</span></td>
+          </tr>
+
+          <tr>
+            <td>3</td>
+            <td>Intense Calming Cream</td>
+            <td>7</td>
+            <td><span class="stock-badge limited">Terbatas</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ORDER -->
+    <section class="order-section" id="pesan">
+      <h2 class="section-title" style="text-align:center">Form Pemesanan</h2>
+
+      <form id="orderForm" class="order-form">
+        <input type="text" id="custName" placeholder="Nama Lengkap" required>
+        <input type="tel" id="custWA" placeholder="Nomor WhatsApp (contoh: 0812...)" required>
+        <select id="custProduct" required>
+          <option value="">-- Pilih Produk --</option>
+          <option>Heartleaf 77% Soothing Toner</option>
+          <option>Heartleaf Pore Control Cleansing Oil</option>
+          <option>Intense Calming Cream</option>
+          <option>Silky Moisture Sunscreen</option>
+        </select>
+        <input type="number" id="custQty" value="1" min="1" required>
+        <textarea id="custAddr" rows="3" placeholder="Alamat Lengkap" required></textarea>
+
+        <button class="btn primary" type="submit">Kirim Pesanan</button>
+      </form>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq container" id="faq">
+      <h2 class="section-title">FAQ</h2>
+
+      <details>
+        <summary>Apakah produk ANUA aman?</summary>
+        <p>Ya, semua produk ANUA aman untuk kulit sensitif.</p>
+      </details>
+
+      <details>
+        <summary>Berapa lama pengiriman?</summary>
+        <p>1 - 3 hari kerja (tergantung alamat).</p>
+      </details>
+
+      <details>
+        <summary>Apa kebijakan retur?</summary>
+        <p>Retur diterima maksimal 3 hari setelah produk diterima (kondisi tertentu).</p>
+      </details>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <p>© 2025 Skincare ANUA — Official Store</p>
+      <div style="margin-top:10px;">
+        <a id="waBtn" class="btn" href="#" role="button">Chat WA</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============== SCRIPT (JS) ============== -->
+  <script>
+  // ================== POPUP KONFIRMASI & SUKSES ==================
+  const popupOverlay = document.getElementById('popupOverlay');
+  const popupTitle = document.getElementById('popupTitle');
+  const popupMessage = document.getElementById('popupMessage');
+  const popupCancel = document.getElementById('popupCancel');
+  const popupOk = document.getElementById('popupOk');
+
+  const popupSuccess = document.getElementById('popupSuccess');
+  const popupSuccessOk = document.getElementById('popupSuccessOk');
+
+  let popupConfirmCallback = null;
+
+  function openPopup(title, message, callback) {
+    if (!popupOverlay || !popupTitle || !popupMessage) return;
+    popupTitle.textContent = title;
+    popupMessage.textContent = message;
+    popupConfirmCallback = typeof callback === 'function' ? callback : null;
+    popupOverlay.classList.add('show');
+    popupOverlay.setAttribute('aria-hidden','false');
+  }
+
+  function closePopup() {
+    if (!popupOverlay) return;
+    popupOverlay.classList.remove('show');
+    popupOverlay.setAttribute('aria-hidden','true');
+    popupConfirmCallback = null;
+  }
+
+  if (popupCancel) popupCancel.addEventListener('click', closePopup);
+  if (popupOverlay) popupOverlay.addEventListener('click', (e) => { if (e.target === popupOverlay) closePopup(); });
+  if (popupOk) popupOk.addEventListener('click', () => { closePopup(); if (popupConfirmCallback) popupConfirmCallback(); });
+
+  function openSuccessPopup() {
+    if (!popupSuccess) return;
+    popupSuccess.classList.add('show');
+    popupSuccess.setAttribute('aria-hidden','false');
+  }
+  function closeSuccessPopup() {
+    if (!popupSuccess) return;
+    popupSuccess.classList.remove('show');
+    popupSuccess.setAttribute('aria-hidden','true');
+  }
+  if (popupSuccessOk) popupSuccessOk.addEventListener('click', closeSuccessPopup);
+  if (popupSuccess) popupSuccess.addEventListener('click', (e) => { if (e.target === popupSuccess) closeSuccessPopup(); });
+
+  // ================== SLIDER / HERO ==================
+  (function() {
+    const wrapper = document.querySelector(".slides-wrapper");
+    const slides = document.querySelectorAll(".slide");
+    const dotsContainer = document.getElementById("sliderDots");
+    if (!wrapper || slides.length === 0 || !dotsContainer) return;
+
+    let index = 0;
+    const total = slides.length;
+
+    slides.forEach((_, i) => {
+      const dot = document.createElement("div");
+      dot.classList.add("dot");
+      if (i === 0) dot.classList.add("active");
+      dot.addEventListener("click", () => { index = i; updateSlider(); resetTimer(); });
+      dotsContainer.appendChild(dot);});
+
+    function updateDots() {
+      const dots = document.querySelectorAll(".dot");
+      dots.forEach((dot, i) => dot.classList.toggle("active", i === index));
+    }
+
+    function updateSlider() {
+      wrapper.style.transform = `translateX(-${index * 100}%)`;
+      updateDots();
+    }
+
+    const nextBtn = document.getElementById("next");
+    const prevBtn = document.getElementById("prev");
+    if (nextBtn) nextBtn.addEventListener('click', () => { index = (index + 1) % total; updateSlider(); resetTimer(); });
+    if (prevBtn) prevBtn.addEventListener('click', () => { index = (index - 1 + total) % total; updateSlider(); resetTimer(); });
+
+    let autoSlide = setInterval(() => { index = (index + 1) % total; updateSlider(); }, 5000);
+    function resetTimer() { clearInterval(autoSlide); autoSlide = setInterval(() => { index = (index + 1) % total; updateSlider(); }, 5000); }
+  })();
+
+  // ================== THEME TOGGLE (LIGHT/DARK) ==================
+  (function() {
+    const toggle = document.querySelector('.theme-toggle');
+    const root = document.documentElement;
+    if (!toggle) return;
+    const savedTheme = localStorage.getItem('anua-theme');
+    if (savedTheme === 'dark') document.body.classList.add('dark');
+    toggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('anua-theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    });
+  })();
+
+  // ================== QUICK ORDER DARI KARTU PRODUK ==================
+  document.querySelectorAll('.quick-order').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const productName = btn.dataset.name || btn.innerText || 'Produk';
+      openPopup("Konfirmasi Produk", `Kamu akan memesan:\n\n${productName}`, () => {
+        const productSelect = document.getElementById('custProduct');
+        const nameInput = document.getElementById('custName');
+        if (productSelect) productSelect.value = productName;
+        location.hash = "#pesan";
+        if (nameInput) nameInput.focus();
+      });
+    });
+  });
+
+  // ================== FORM ORDER ==================
+  const orderForm = document.getElementById('orderForm');
+  if (orderForm) {
+    orderForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nameInput = document.getElementById('custName');
+      const waInput = document.getElementById('custWA');
+      const productSelect = document.getElementById('custProduct');
+      const qtyInput = document.getElementById('custQty');
+      const addrInput = document.getElementById('custAddr');
+
+      const name = nameInput ? nameInput.value.trim() : '';
+      let waRaw = waInput ? waInput.value.replace(/[^0-9+]/g, '') : '';
+      const product = productSelect ? productSelect.value : '';
+      const qty = qtyInput ? (qtyInput.value || 1) : 1;
+      const addr = addrInput ? addrInput.value.trim() : '';
+
+      if (!name || !waRaw || !product || !addr) {
+        openPopup("Data belum lengkap", "Pastikan semua kolom sudah diisi sebelum melanjutkan.", null);
+        return;
+      }
+
+      const waDisplay = waRaw;
+      let wa = waRaw;
+      if (wa.startsWith('0')) wa = "+62" + wa.slice(1);
+
+      const confirmText =
+        `Mohon cek kembali data pesanan:\n\n` +
+        `Nama: ${name}\n` +
+        `No. WA: ${waDisplay}\n` +
+        `Produk: ${product}\n` +
+        `Jumlah: ${qty}\n` +
+        `Alamat: ${addr}\n\n` +
+        `Klik "Lanjut" untuk membuka WhatsApp.`;
+
+      openPopup("Konfirmasi Pesanan", confirmText, () => {
+        const msg = encodeURIComponent(
+          `Halo ANUA, saya ${name} ingin memesan:\n` +
+          `Produk: ${product}\nJumlah: ${qty}\nAlamat: ${addr}`
+        );
+        window.open(`https://wa.me/${wa}?text=${msg}`, "_blank");
+        openSuccessPopup();
+        orderForm.reset();
+      });
+    });
+  }
+
+  // ================== TOMBOL CHAT WA DI FOOTER ==================
+  const waBtn = document.getElementById('waBtn');
+  if (waBtn) {
+    waBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const phone = "+6289674460202";
+      const msg = encodeURIComponent("Halo ANUA, saya mau tanya mengenai produk.");
+      window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
+    });
+  }
+  </script>
+</body>
+</html>
